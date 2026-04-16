@@ -109,44 +109,65 @@ export default function CampanasPage() {
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-5">
           {/* LEFT — Contact selector */}
           <section className="lg:col-span-3 bg-cspanel border border-csborder rounded-2xl overflow-hidden flex flex-col">
-            <div className="p-5 border-b border-csborder">
-              <div className="flex items-start justify-between gap-3 mb-3">
+            <div className="p-4 md:p-5 border-b border-csborder space-y-3">
+              {/* Header + counter */}
+              <div className="flex items-center justify-between gap-3">
                 <div>
                   <p className="text-[10px] uppercase tracking-wider text-csmuted font-bold">Paso 1</p>
                   <h2 className="text-base font-bold text-white">Seleccionar contactos</h2>
                 </div>
-                <div className="flex items-center gap-2 bg-csaccent/10 text-csaccent px-3 py-1.5 rounded-full">
-                  <span className="text-xs font-bold">{checked.size}</span>
-                  <span className="text-[10px] uppercase tracking-wider">seleccionados</span>
+                {checked.size > 0 ? (
+                  <button
+                    onClick={clearSelection}
+                    className="flex items-center gap-2 bg-csaccent/15 text-csaccent border border-csaccent/30 px-3 py-1.5 rounded-full hover:bg-csaccent/25 transition shrink-0"
+                    title="Limpiar selección"
+                  >
+                    <span className="text-xs font-bold">{checked.size}</span>
+                    <span className="text-[10px] uppercase tracking-wider hidden sm:inline">sel.</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="18" y1="6" x2="6" y2="18" />
+                      <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                  </button>
+                ) : (
+                  <div className="flex items-center gap-2 bg-cspanel2 text-csmuted border border-csborder px-3 py-1.5 rounded-full shrink-0">
+                    <span className="text-xs font-bold">0</span>
+                    <span className="text-[10px] uppercase tracking-wider hidden sm:inline">sel.</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Segment filter — scroll horizontal */}
+              <div>
+                <p className="text-[10px] uppercase tracking-wider text-csmuted mb-1.5">Segmento</p>
+                <div className="overflow-x-auto -mx-1 px-1 pb-1 no-scrollbar">
+                  <div className="flex gap-2 w-max">
+                    {SEGMENTS.map((s) => {
+                      const count =
+                        s === "Todos"
+                          ? CONTACTS.length
+                          : CONTACTS.filter((c) => c.segment === s).length;
+                      return (
+                        <button
+                          key={s}
+                          onClick={() => setSegment(s)}
+                          className={clsx(
+                            "px-3 py-1.5 rounded-full text-xs font-semibold border transition whitespace-nowrap",
+                            segment === s
+                              ? "bg-csaccent border-csaccent text-white"
+                              : "bg-cspanel2 border-csborder text-csmuted hover:text-white hover:border-csaccent/40"
+                          )}
+                        >
+                          {s} · {count}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
 
-              {/* Segment filter */}
-              <div className="flex flex-wrap gap-2 mb-3">
-                {SEGMENTS.map((s) => {
-                  const count =
-                    s === "Todos"
-                      ? CONTACTS.length
-                      : CONTACTS.filter((c) => c.segment === s).length;
-                  return (
-                    <button
-                      key={s}
-                      onClick={() => setSegment(s)}
-                      className={clsx(
-                        "px-3 py-1.5 rounded-full text-xs font-semibold border transition",
-                        segment === s
-                          ? "bg-csaccent border-csaccent text-white"
-                          : "bg-cspanel2 border-csborder text-csmuted hover:text-white hover:border-csaccent/40"
-                      )}
-                    >
-                      {s} · {count}
-                    </button>
-                  );
-                })}
-              </div>
-
               {/* Search */}
-              <div className="relative mb-3">
+              <div className="relative">
                 <svg className="absolute left-3 top-1/2 -translate-y-1/2 text-csmuted" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="11" cy="11" r="8" />
                   <path d="m21 21-4.3-4.3" />
@@ -160,26 +181,35 @@ export default function CampanasPage() {
                 />
               </div>
 
-              {/* Quick actions */}
-              <div className="flex flex-wrap gap-2 items-center text-xs">
-                <span className="text-csmuted">Rápido:</span>
-                <button onClick={selectAllVisible} className="px-2.5 py-1 rounded-lg bg-cspanel2 border border-csborder text-white hover:border-csaccent/40">
-                  Seleccionar todos ({filtered.length})
-                </button>
-                {[10, 25, 50].map((n) => (
+              {/* Quick quantity selector */}
+              <div>
+                <p className="text-[10px] uppercase tracking-wider text-csmuted mb-1.5">Selección rápida</p>
+                <div className="grid grid-cols-4 gap-1.5">
+                  {[10, 25, 50].map((n) => {
+                    const max = Math.min(n, filtered.length);
+                    const disabled = filtered.length === 0;
+                    return (
+                      <button
+                        key={n}
+                        onClick={() => selectFirst(max)}
+                        disabled={disabled}
+                        className="py-2.5 rounded-lg bg-cspanel2 border border-csborder text-white text-sm font-bold hover:border-csaccent/60 hover:bg-cspanel3 transition disabled:opacity-40 disabled:cursor-not-allowed"
+                      >
+                        {n}
+                      </button>
+                    );
+                  })}
                   <button
-                    key={n}
-                    onClick={() => selectFirst(Math.min(n, filtered.length))}
-                    className="px-2.5 py-1 rounded-lg bg-cspanel2 border border-csborder text-csmuted hover:text-white hover:border-csaccent/40"
+                    onClick={selectAllVisible}
+                    disabled={filtered.length === 0}
+                    className="py-2.5 rounded-lg cs-gradient text-white text-sm font-bold shadow-lg shadow-csaccent/20 hover:brightness-110 transition disabled:opacity-40 disabled:cursor-not-allowed"
                   >
-                    Primeros {n}
+                    Todos
                   </button>
-                ))}
-                {checked.size > 0 && (
-                  <button onClick={clearSelection} className="ml-auto px-2.5 py-1 rounded-lg text-csmuted hover:text-white">
-                    Limpiar
-                  </button>
-                )}
+                </div>
+                <p className="text-[10px] text-csmuted mt-1.5">
+                  Elegí cuántos contactos seleccionar del segmento actual ({filtered.length} disponibles)
+                </p>
               </div>
             </div>
 
