@@ -26,6 +26,8 @@ function personalize(body: string, name: string) {
   return body.replaceAll("{nombre}", firstName);
 }
 
+const MOBILE_PAGE_SIZE = 15;
+
 export default function CampanasPage() {
   const [segment, setSegment] = useState<ContactSegment | "Todos">("Todos");
   const [q, setQ] = useState("");
@@ -34,6 +36,7 @@ export default function CampanasPage() {
   const [template, setTemplate] = useState<CampaignTemplate>(TEMPLATES[0]);
   const [customBody, setCustomBody] = useState<string | null>(null);
   const [sent, setSent] = useState(false);
+  const [showAllMobile, setShowAllMobile] = useState(false);
 
   const filtered = useMemo(() => {
     let list = CONTACTS;
@@ -213,9 +216,9 @@ export default function CampanasPage() {
               </div>
             </div>
 
-            <div className="max-h-[520px] overflow-y-auto">
+            <div className="md:max-h-[520px] md:overflow-y-auto">
               <table className="w-full text-sm">
-                <thead className="bg-cspanel2 text-csmuted text-[10px] uppercase tracking-wider sticky top-0">
+                <thead className="bg-cspanel2 text-csmuted text-[10px] uppercase tracking-wider md:sticky md:top-0">
                   <tr>
                     <th className="w-10 px-4 py-3">
                       <input
@@ -234,15 +237,17 @@ export default function CampanasPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {displayed.map((c) => {
+                  {displayed.map((c, idx) => {
                     const isChecked = checked.has(c.id);
+                    const hiddenOnMobile = !showAllMobile && idx >= MOBILE_PAGE_SIZE;
                     return (
                       <tr
                         key={c.id}
                         onClick={() => toggle(c.id)}
                         className={clsx(
                           "border-t border-csborder cursor-pointer transition",
-                          isChecked ? "bg-csaccent/10" : "hover:bg-white/5"
+                          isChecked ? "bg-csaccent/10" : "hover:bg-white/5",
+                          hiddenOnMobile && "hidden md:table-row"
                         )}
                       >
                         <td className="px-4 py-3">
@@ -279,6 +284,18 @@ export default function CampanasPage() {
                 </tbody>
               </table>
             </div>
+
+            {/* Mobile "ver más" control */}
+            {displayed.length > MOBILE_PAGE_SIZE && (
+              <button
+                onClick={() => setShowAllMobile((v) => !v)}
+                className="md:hidden w-full py-3 border-t border-csborder bg-cspanel2 text-csaccent text-xs font-bold uppercase tracking-wider hover:bg-cspanel3 transition"
+              >
+                {showAllMobile
+                  ? `Mostrar menos · ver los primeros ${MOBILE_PAGE_SIZE}`
+                  : `Ver todos · ${displayed.length - MOBILE_PAGE_SIZE} contactos más`}
+              </button>
+            )}
           </section>
 
           {/* RIGHT — Template & preview */}
@@ -288,7 +305,7 @@ export default function CampanasPage() {
               <p className="text-[10px] uppercase tracking-wider text-csmuted font-bold mb-1">Paso 2</p>
               <h2 className="text-base font-bold text-white mb-3">Elegir plantilla</h2>
 
-              <div className="space-y-2 max-h-[240px] overflow-y-auto pr-1">
+              <div className="space-y-2">
                 {TEMPLATES.map((t) => {
                   const active = template.id === t.id;
                   return (
@@ -337,7 +354,7 @@ export default function CampanasPage() {
                   <p className="text-[11px] text-csmuted">WhatsApp · Preview</p>
                 </div>
 
-                <div className="bg-cspanel2 rounded-lg p-3 max-h-[280px] overflow-y-auto">
+                <div className="bg-cspanel2 rounded-lg p-3 md:max-h-[280px] md:overflow-y-auto">
                   <p className="whitespace-pre-wrap text-sm text-slate-100 leading-relaxed">
                     {previewContact
                       ? personalize(body, previewContact.name)
