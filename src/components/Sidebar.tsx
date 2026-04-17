@@ -97,8 +97,8 @@ export function Sidebar() {
           <div className="flex items-center gap-3">
             <BrandLogo size={44} />
             <div>
-              <h1 className="font-bold text-[13px] leading-tight text-white">Celulares</h1>
-              <p className="text-[11px] text-csmuted uppercase tracking-wider">Nuevos Saavedra</p>
+              <h1 className="font-bold text-[13px] leading-tight text-white">Smart</h1>
+              <p className="text-[11px] text-csmuted uppercase tracking-wider">Saavedra</p>
             </div>
           </div>
         </div>
@@ -151,7 +151,7 @@ export function Sidebar() {
       <header className="md:hidden fixed top-0 inset-x-0 h-14 bg-cspanel border-b border-csborder flex items-center justify-between px-4 z-40">
         <div className="flex items-center gap-2">
           <BrandLogo size={34} />
-          <h1 className="font-bold text-sm text-white">Saavedra</h1>
+          <h1 className="font-bold text-sm text-white">Smart Saavedra</h1>
         </div>
         <button
           onClick={handleLogout}

@@ -28,7 +28,7 @@ export default function LoginPage() {
       <div className="relative w-full max-w-md">
         <div className="flex flex-col items-center mb-10">
           <BrandLogo size={88} />
-          <h1 className="mt-5 text-2xl font-bold text-white tracking-tight">Celulares Nuevos Saavedra</h1>
+          <h1 className="mt-5 text-2xl font-bold text-white tracking-tight">Smart Saavedra</h1>
           <p className="text-sm text-csmuted mt-1">Panel de gestión · CRM interno</p>
         </div>
 
@@ -86,7 +86,7 @@ export default function LoginPage() {
         </div>
 
         <p className="text-center text-[11px] text-csmuted mt-6">
-          Celulares Nuevos Saavedra · v1.0
+          Smart Saavedra · v1.0
         </p>
       </div>
     </div>

@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Celulares Nuevos Saavedra · CRM",
-  description: "CRM y agente de IA para Celulares Nuevos Saavedra",
+  title: "Smart Saavedra · CRM",
+  description: "CRM y agente de IA para Smart Saavedra",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

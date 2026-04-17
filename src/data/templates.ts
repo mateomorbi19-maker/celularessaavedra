@@ -15,7 +15,7 @@ export const TEMPLATES: CampaignTemplate[] = [
     recommendedSegment: "Lead Calificado",
     preview: "10% OFF pagando en efectivo o transferencia",
     body:
-`Hola {nombre}! 👋 Te escribimos desde *Celulares Nuevos Saavedra* 📱
+`Hola {nombre}! 👋 Te escribimos desde *Smart Saavedra* 📱
 
 Esta semana tenemos el *iPhone 16 128GB* con *10% OFF* pagando en efectivo o transferencia.
 
@@ -68,7 +68,7 @@ Todo sellado con garantía oficial. ¿Querés que te pase precios y fotos, {nomb
     recommendedSegment: "Cliente",
     preview: "Preventa exclusiva para clientes VIP",
     body:
-`{nombre} 👑, gracias por ser cliente de *Celulares Nuevos Saavedra*.
+`{nombre} 👑, gracias por ser cliente de *Smart Saavedra*.
 
 Antes de publicar al público, te dejamos acceso preferencial:
 

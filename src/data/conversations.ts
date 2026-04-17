@@ -36,7 +36,7 @@ export const CONVERSATIONS: Conversation[] = [
       {
         id: "m2", direction: "out", agent: true,
         content:
-`¡Hola Lucía! 👋 Soy el asistente de *Celulares Nuevos Saavedra* 📱
+`¡Hola Lucía! 👋 Soy el asistente de *Smart Saavedra* 📱
 
 Sí, tenemos el *iPhone 16 Pro 128GB* en stock. Colores disponibles:
 • Titanio Natural

@@ -92,7 +92,7 @@ function AgenteTab() {
         <div className="space-y-3">
           <div>
             <label className="text-[11px] uppercase text-csmuted">Nombre del agente</label>
-            <input defaultValue="Saavedra Bot" className="w-full mt-1 bg-cspanel2 border border-csborder rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-csaccent/40" />
+            <input defaultValue="Smart Saavedra Bot" className="w-full mt-1 bg-cspanel2 border border-csborder rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-csaccent/40" />
           </div>
           <div>
             <label className="text-[11px] uppercase text-csmuted">Tono</label>
@@ -105,7 +105,7 @@ function AgenteTab() {
           <div>
             <label className="text-[11px] uppercase text-csmuted">Mensaje de bienvenida</label>
             <textarea
-              defaultValue="¡Hola! 👋 Bienvenido a Celulares Nuevos Saavedra 📱 ¿En qué iPhone te podemos ayudar hoy?"
+              defaultValue="¡Hola! 👋 Bienvenido a Smart Saavedra 📱 ¿En qué iPhone te podemos ayudar hoy?"
               rows={3}
               className="w-full mt-1 bg-cspanel2 border border-csborder rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-csaccent/40"
             />
