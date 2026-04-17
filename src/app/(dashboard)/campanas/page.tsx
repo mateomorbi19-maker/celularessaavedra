@@ -27,6 +27,8 @@ function personalize(body: string, name: string) {
 }
 
 const MOBILE_PAGE_SIZE = 15;
+const COST_PER_MSG_LOW = 0.015;   // USD — tarifa mínima WhatsApp Cloud API
+const COST_PER_MSG_HIGH = 0.02;   // USD — tarifa máxima
 
 export default function CampanasPage() {
   const [segment, setSegment] = useState<ContactSegment | "Todos">("Todos");
@@ -184,34 +186,61 @@ export default function CampanasPage() {
                 />
               </div>
 
-              {/* Quick quantity selector */}
+              {/* Quantity slider + Max button + cost estimator */}
               <div>
-                <p className="text-[10px] uppercase tracking-wider text-csmuted mb-1.5">Selección rápida</p>
-                <div className="grid grid-cols-4 gap-1.5">
-                  {[10, 25, 50].map((n) => {
-                    const max = Math.min(n, filtered.length);
-                    const disabled = filtered.length === 0;
-                    return (
-                      <button
-                        key={n}
-                        onClick={() => selectFirst(max)}
-                        disabled={disabled}
-                        className="py-2.5 rounded-lg bg-cspanel2 border border-csborder text-white text-sm font-bold hover:border-csaccent/60 hover:bg-cspanel3 transition disabled:opacity-40 disabled:cursor-not-allowed"
-                      >
-                        {n}
-                      </button>
-                    );
-                  })}
+                <div className="flex items-end justify-between mb-1.5">
+                  <p className="text-[10px] uppercase tracking-wider text-csmuted">Cantidad a seleccionar</p>
+                  <p className="text-[11px] text-white font-semibold">
+                    <span className="text-csaccent">{Math.min(checked.size, filtered.length)}</span>
+                    <span className="text-csmuted"> / {filtered.length}</span>
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <input
+                    type="range"
+                    min={0}
+                    max={filtered.length}
+                    value={Math.min(checked.size, filtered.length)}
+                    onChange={(e) => selectFirst(Number(e.target.value))}
+                    disabled={filtered.length === 0}
+                    className="flex-1 cs-range accent-csaccent cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                  />
                   <button
                     onClick={selectAllVisible}
                     disabled={filtered.length === 0}
-                    className="py-2.5 rounded-lg cs-gradient text-white text-sm font-bold shadow-lg shadow-csaccent/20 hover:brightness-110 transition disabled:opacity-40 disabled:cursor-not-allowed"
+                    className="px-3 py-1.5 rounded-lg cs-gradient text-white text-xs font-bold shadow-lg shadow-csaccent/20 hover:brightness-110 transition disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
+                    title={`Seleccionar los ${filtered.length} contactos del segmento`}
                   >
-                    Todos
+                    Max
                   </button>
                 </div>
-                <p className="text-[10px] text-csmuted mt-1.5">
-                  Elegí cuántos contactos seleccionar del segmento actual ({filtered.length} disponibles)
+
+                {/* Cost estimator */}
+                <div className="mt-3 flex items-center justify-between gap-3 bg-cspanel2 border border-csborder rounded-lg px-3 py-2">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-csmuted shrink-0">
+                      <line x1="12" y1="1" x2="12" y2="23" />
+                      <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                    </svg>
+                    <p className="text-[11px] text-csmuted truncate">
+                      Costo estimado WhatsApp API
+                    </p>
+                  </div>
+                  <p className="text-[13px] font-bold text-white whitespace-nowrap">
+                    {checked.size === 0 ? (
+                      <span className="text-csmuted">USD 0,00</span>
+                    ) : (
+                      <>
+                        USD {(checked.size * COST_PER_MSG_LOW).toFixed(2).replace(".", ",")}
+                        <span className="text-csmuted"> – </span>
+                        {(checked.size * COST_PER_MSG_HIGH).toFixed(2).replace(".", ",")}
+                      </>
+                    )}
+                  </p>
+                </div>
+                <p className="text-[10px] text-csmuted mt-1">
+                  Tarifa WhatsApp Cloud API: USD 0,015 – 0,02 por mensaje enviado
                 </p>
               </div>
             </div>
@@ -377,6 +406,17 @@ export default function CampanasPage() {
                   La variable <span className="text-csaccent font-mono">{"{nombre}"}</span> se reemplaza automáticamente por el primer nombre de cada contacto.
                 </p>
               </details>
+
+              {checked.size > 0 && !sent && (
+                <div className="mb-3 flex items-center justify-between gap-2 bg-cspanel2 border border-csborder rounded-lg px-3 py-2">
+                  <span className="text-[11px] text-csmuted">Inversión estimada</span>
+                  <span className="text-sm font-bold text-white whitespace-nowrap">
+                    USD {(checked.size * COST_PER_MSG_LOW).toFixed(2).replace(".", ",")}
+                    <span className="text-csmuted"> – </span>
+                    {(checked.size * COST_PER_MSG_HIGH).toFixed(2).replace(".", ",")}
+                  </span>
+                </div>
+              )}
 
               <button
                 disabled={checked.size === 0 || sent}

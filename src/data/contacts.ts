@@ -98,32 +98,40 @@ function genPhone(rand: () => number): string {
   return `+54 9 ${area} ${n1}-${n2}`;
 }
 
+function genUniqueName(rand: () => number, used: Set<string>): string {
+  for (let attempt = 0; attempt < 50; attempt++) {
+    const fn = FIRST_NAMES[Math.floor(rand() * FIRST_NAMES.length)];
+    const ln = LAST_NAMES[Math.floor(rand() * LAST_NAMES.length)];
+    const name = `${fn} ${ln}`;
+    if (!used.has(name)) {
+      used.add(name);
+      return name;
+    }
+  }
+  const base = `${FIRST_NAMES[Math.floor(rand() * FIRST_NAMES.length)]} ${LAST_NAMES[Math.floor(rand() * LAST_NAMES.length)]}`;
+  const name = `${base} ${used.size}`;
+  used.add(name);
+  return name;
+}
+
 export const CONTACTS: Contact[] = (() => {
   const rand = mulberry32(42);
   const out: Contact[] = [];
   const usedNames = new Set<string>();
 
-  // 42 Clientes
-  for (let i = 0; i < 42; i++) {
-    const fn = FIRST_NAMES[Math.floor(rand() * FIRST_NAMES.length)];
-    const ln = LAST_NAMES[Math.floor(rand() * LAST_NAMES.length)];
-    let name = `${fn} ${ln}`;
-    while (usedNames.has(name)) {
-      const ln2 = LAST_NAMES[Math.floor(rand() * LAST_NAMES.length)];
-      name = `${fn} ${ln2}`;
-    }
-    usedNames.add(name);
+  // 252 Clientes
+  for (let i = 0; i < 252; i++) {
     const orders = 1 + Math.floor(rand() * 5);
     const avgTicket = 500 + Math.floor(rand() * 1200);
     const totalSpent = orders * avgTicket;
     const fav = PRODUCTS_INTEREST[Math.floor(rand() * PRODUCTS_INTEREST.length)];
     out.push({
       id: `cli-${i + 1}`,
-      name,
+      name: genUniqueName(rand, usedNames),
       phone: genPhone(rand),
       segment: "Cliente",
       interestedIn: fav,
-      lastContact: daysAgo(Math.floor(rand() * 120)),
+      lastContact: daysAgo(Math.floor(rand() * 180)),
       totalSpent,
       orders,
       tags: totalSpent > 2500 ? ["VIP", "recurrente"] : orders > 1 ? ["recurrente"] : ["cliente"],
@@ -131,47 +139,31 @@ export const CONTACTS: Contact[] = (() => {
     });
   }
 
-  // 40 Leads Calificados
-  for (let i = 0; i < 40; i++) {
-    const fn = FIRST_NAMES[Math.floor(rand() * FIRST_NAMES.length)];
-    const ln = LAST_NAMES[Math.floor(rand() * LAST_NAMES.length)];
-    let name = `${fn} ${ln}`;
-    while (usedNames.has(name)) {
-      const ln2 = LAST_NAMES[Math.floor(rand() * LAST_NAMES.length)];
-      name = `${fn} ${ln2}`;
-    }
-    usedNames.add(name);
+  // 240 Leads Calificados
+  for (let i = 0; i < 240; i++) {
     const interested = PRODUCTS_INTEREST[Math.floor(rand() * PRODUCTS_INTEREST.length)];
     const budget = 400 + Math.floor(rand() * 1400);
     out.push({
       id: `lcal-${i + 1}`,
-      name,
+      name: genUniqueName(rand, usedNames),
       phone: genPhone(rand),
       segment: "Lead Calificado",
       interestedIn: interested,
       budget,
-      lastContact: hoursAgo(Math.floor(rand() * 72)),
+      lastContact: hoursAgo(Math.floor(rand() * 120)),
       tags: rand() > 0.5 ? ["interés alto"] : ["en seguimiento"],
       notes: rand() > 0.6 ? "Consultó financiación en cuotas" : undefined,
     });
   }
 
-  // 18 Leads No Calificados
-  for (let i = 0; i < 18; i++) {
-    const fn = FIRST_NAMES[Math.floor(rand() * FIRST_NAMES.length)];
-    const ln = LAST_NAMES[Math.floor(rand() * LAST_NAMES.length)];
-    let name = `${fn} ${ln}`;
-    while (usedNames.has(name)) {
-      const ln2 = LAST_NAMES[Math.floor(rand() * LAST_NAMES.length)];
-      name = `${fn} ${ln2}`;
-    }
-    usedNames.add(name);
+  // 108 Leads No Calificados
+  for (let i = 0; i < 108; i++) {
     out.push({
       id: `lnc-${i + 1}`,
-      name,
+      name: genUniqueName(rand, usedNames),
       phone: genPhone(rand),
       segment: "Lead No Calificado",
-      lastContact: daysAgo(Math.floor(rand() * 30)),
+      lastContact: daysAgo(Math.floor(rand() * 60)),
       tags: ["descartado"],
       notes: NO_CAL_REASONS[Math.floor(rand() * NO_CAL_REASONS.length)],
     });
